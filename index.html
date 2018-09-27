@@ -10,27 +10,38 @@
     </head>
     <body>
         <script src="js/three.min.js"></script>
-        <script src="js/loaders/DDSLoader.js"></script>
+        <script src="js/tangerine/fields.js"></script>
         <script src="js/tangerine/load_field_tiles.js"></script>
         <script>
             "use strict";
             var scene = new THREE.Scene();
-            var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+            var wh_ratio = window.innerHeight / window.innerWidth;
+            var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize( window.innerWidth, window.innerHeight );
             document.body.appendChild( renderer.domElement );
 
-            var geometry = new THREE.BoxGeometry( 1, 1, 0.05 );
-            var cube = new THREE.Mesh( geometry, TGR.Material.bonus0 );
-            scene.add( cube );
-
-            camera.position.z = 5;
+            var clover = new THREE.Object3D();
+            var f_clover = TGR.Fields.CLOVER;
+            for (var y = 0; y < f_clover.height; y++){
+                for(var x = 0; x < f_clover.width; x++){   
+                    var tile = f_clover.tile[y][x];
+                    if(tile != null){
+                        var tileObj = TGR.Tile(tile.type);
+                        tileObj != null && clover.add( tileObj );
+                        tileObj.position.x = (x - 5.5);
+                        tileObj.position.y = (y - 5.5);
+                    }
+                }
+            }
+            scene.add(clover);
+            camera.position.z = 10;
 
 
             function animate() {
                 requestAnimationFrame( animate );
-                cube.rotation.x += 0.01;
-                cube.rotation.y += 0.02;
+                clover.rotation.x += 0.01;
+                clover.rotation.y += 0.015;
                 renderer.render( scene, camera );
             }
             animate();
