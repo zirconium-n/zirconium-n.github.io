@@ -5,14 +5,14 @@ TGR.Fields.CLOVER = {"height":11,"tile":[[null,null,null,null,null,null,null,nul
 
 
 TGR.Fields.Linking = {
-    "up" : 1 << 7,
-    "right" : 1 << 6,
-    "down" : 1 << 5,
-    "left" : 1 << 4,
-    "up^" : 1 << 3,
-    "right^" : 1 << 2,
-    "down^" : 1 << 1,
-    "left^" : 1 << 0,
+    "up^" : 1 << 7,
+    "right^" : 1 << 6,
+    "down^" : 1 << 5,
+    "left^" : 1 << 4,
+    "up" : 1 << 3,
+    "right" : 1 << 2,
+    "down" : 1 << 1,
+    "left" : 1 << 0,
 };
 
 //looks stupid
@@ -41,7 +41,7 @@ TGR.Fields.Tile = {
 };
 
 TGR.Fields.has_direction = function(linking, direction){
-    return Boolean(linking & TGR.fields.linking[direction]);
+    return Boolean(linking & TGR.Fields.Linking[direction]);
 }
 
 

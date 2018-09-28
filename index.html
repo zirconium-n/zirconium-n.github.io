@@ -10,8 +10,11 @@
     </head>
     <body>
         <script src="js/three.min.js"></script>
+        <script src="js/Tween.js"></script>
         <script src="js/tangerine/fields.js"></script>
         <script src="js/tangerine/load_field_tiles.js"></script>
+        <script src="js/tangerine/chara.js"></script>
+        <script src="js/tangerine/player.js"></script>
         <script>
             "use strict";
             var scene = new THREE.Scene();
@@ -20,28 +23,60 @@
             var renderer = new THREE.WebGLRenderer();
             renderer.setSize( window.innerWidth, window.innerHeight );
             document.body.appendChild( renderer.domElement );
+            camera.position.z = 8;
 
-            var clover = new THREE.Object3D();
-            var f_clover = TGR.Fields.CLOVER;
-            for (var y = 0; y < f_clover.height; y++){
-                for(var x = 0; x < f_clover.width; x++){   
-                    var tile = f_clover.tile[y][x];
-                    if(tile != null){
-                        var tileObj = TGR.Tile(tile.type);
-                        tileObj != null && clover.add( tileObj );
-                        tileObj.position.x = (x - f_clover.width / 2);
-                        tileObj.position.y = (y - f_clover.height / 2);
-                    }
-                }
-            }
+            var field = TGR.Fields.CLOVER;
+            var clover = TGR.Map(field)
             scene.add(clover);
-            camera.position.z = 10;
+
+            var suguri = TGR.Chara("Suguri");
+            var hime = TGR.Chara("Hime");
+            
+            clover.add(suguri);
+            suguri.rotateX(Math.PI / 2);
+            var suguri_p = new TGR.Player(suguri, 3, 2);
+
+            clover.add(hime);
+            hime.rotateX(Math.PI / 2);
+            var hime_p = new TGR.Player(hime, 7, 8);
+
+            var direction = {
+                up : {x : 0, y : 1},
+                left : {x : -1, y : 0},
+                right : {x : 1, y : 0},
+                down : {x : 0, y : -1},
+            };
+
+            clover.translateX(-field.width / 2);
+            clover.translateY(-field.height / 2);
 
 
             function animate() {
                 requestAnimationFrame( animate );
+                TWEEN.update();
+
+                //stupid, fix later
+                clover.translateX(field.width / 2);
+                clover.translateY(field.height / 2);
                 clover.rotation.x += 0.01;
-                clover.rotation.y += 0.015;
+                clover.rotation.y += 0.01;
+                clover.translateX(-field.width / 2);
+                clover.translateY(-field.height / 2);
+
+                for(let p of [suguri_p, hime_p]){
+                    if(!p.moving){
+                        var possible_move = [];
+                        var tile = field.tile[p.position.y][p.position.x];
+                        for(let dir of ["up", "right", "left", "down"]){
+                            if(TGR.Fields.has_direction(tile.linking, dir)){
+                                possible_move.push(direction[dir]);
+                            }
+                        }
+                        console.assert(possible_move.length > 0);
+                        var move = possible_move[Math.floor(Math.random()*possible_move.length)];
+                        p.move(move.x, move.y);
+                    }
+                }
                 renderer.render( scene, camera );
             }
             animate();
