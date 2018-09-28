@@ -37,8 +37,8 @@ TGR.Tile = function(tile_type){
     if (typeof(tile_type) === "number"){
         tile_type = TGR.Fields.Tile[tile_type];
     }
-    var material = new THREE.MeshBasicMaterial({map : TGR.Texture[tile_type]});    
-    var geometry = new THREE.BoxGeometry( 1, 1, 0.05 );
+    var material = new THREE.MeshBasicMaterial({map : TGR.Texture[tile_type], side: THREE.DoubleSide});    
+    var geometry = new THREE.PlaneGeometry( 1, 1 );
     return new THREE.Mesh( geometry, material );
 }
 
