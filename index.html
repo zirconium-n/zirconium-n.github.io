@@ -75,7 +75,7 @@
                         console.assert(possible_move.length > 0);
                         var move = possible_move[Math.floor(Math.random()*possible_move.length)];
                         var speed = (p === suguri_p) + 1;
-                        p.move(move.x, move.y, 1000 / speed);
+                        p.move(move.x, move.y, 500 / speed);
                     }
                 }
                 renderer.render( scene, camera );
